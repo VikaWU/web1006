@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vika 實驗室 | 把 AI 用回生活・從真實問題開始的生活實驗</title>
+  <meta name="description" content="跟 Vika 一起探索 AI、家庭、日文學習與一人創作。從真實問題開始，做自己的生活實驗。">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', '"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              ink: '#233c3a',
+              paper: '#f6f4ec',
+              paperDark: '#ede8da',
+              forest: '#1f4946',
+              forestDeep: '#173735',
+              forestLight: '#2e615d',
+              sand: '#f5d374',
+              sandLight: '#fae4a4',
+              line: '#cbd1c6',
+              tag: '#e1e7da',
+            }
+          },
+          animation: {
+            'tilt-slow': 'tilt 8s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            tilt: {
+              '0%': { transform: 'rotate(1.5deg)' },
+              '100%': { transform: 'rotate(2.8deg)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f6f4ec;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd1c6;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #aab3a4;
+    }
+
+    /* Paper texture & note effect */
+    .note-shadow {
+      box-shadow: 14px 14px 0 #d9dfd0;
+    }
+    .note-shadow-sm {
+      box-shadow: 6px 6px 0 #d9dfd0;
+    }
+
+    .yellow-highlight {
+      background: linear-gradient(transparent 65%, #f5d374 65%);
+    }
+
+    .glass-nav {
+      background: rgba(246, 244, 236, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+
+<body class="bg-brand-paper text-brand-ink font-sans antialiased selection:bg-brand-sand selection:text-brand-forestDeep min-h-screen flex flex-col justify-between">
+
+  <header class="sticky top-0 z-50 glass-nav border-b border-brand-line transition-all">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#home" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-brand-forest text-brand-sand flex items-center justify-center font-bold text-xl shadow-md group-hover:scale-105 transition-transform">
+          <span>V</span>
+        </div>
+        <div>
+          <span class="font-extrabold text-lg tracking-wide text-brand-forest block leading-none">Vika 實驗室</span>
+          <span class="text-[10px] tracking-widest text-slate-500 font-mono uppercase mt-1 block">LIFE × AI × POSSIBILITIES</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-brand-forest">
+        <a href="#about" class="hover:text-brand-forestDeep border-b-2 border-transparent hover:border-brand-sand pb-1 transition-all">認識 Vika</a>
+        <a href="#experiments" class="hover:text-brand-forestDeep border-b-2 border-transparent hover:border-brand-sand pb-1 transition-all">生活實驗</a>
+        <a href="#approach" class="hover:text-brand-forestDeep border-b-2 border-transparent hover:border-brand-sand pb-1 transition-all">核心理念</a>
+        <a href="#follow" class="hover:text-brand-forestDeep border-b-2 border-transparent hover:border-brand-sand pb-1 transition-all">追蹤日常</a>
+        <a href="#course" class="hover:text-brand-forestDeep border-b-2 border-transparent hover:border-brand-sand pb-1 transition-all">AI 課程</a>
+      </nav>
+
+      <!-- Action Button & Mobile Toggle -->
+      <div class="flex items-center gap-3">
+        <a href="#course" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-bold bg-brand-forest text-white hover:bg-brand-forestDeep shadow-sm transition active:scale-95">
+          <i data-lucide="compass" class="w-3.5 h-3.5 text-brand-sand"></i>
+          <span>探索 AI 實驗室</span>
+        </a>
+        <button id="menu-btn" class="md:hidden p-2 rounded-lg border border-brand-line hover:bg-brand-paperDark text-brand-forest" aria-label="切換選單">
+          <i data-lucide="menu" id="menu-icon" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div id="mobile-nav" class="hidden md:hidden border-b border-brand-line bg-brand-paper px-6 py-5 transition-all">
+      <div class="flex flex-col gap-4 text-sm font-medium text-brand-forest">
+        <a href="#about" class="mobile-link py-2 flex items-center justify-between border-b border-brand-line/60">認識 Vika <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i></a>
+        <a href="#experiments" class="mobile-link py-2 flex items-center justify-between border-b border-brand-line/60">生活實驗 <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i></a>
+        <a href="#approach" class="mobile-link py-2 flex items-center justify-between border-b border-brand-line/60">核心理念 <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i></a>
+        <a href="#follow" class="mobile-link py-2 flex items-center justify-between border-b border-brand-line/60">追蹤日常 <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i></a>
+        <a href="#course" class="mobile-link py-2 flex items-center justify-between">AI 課程與方向 <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i></a>
+        <a href="#course" class="mobile-link mt-2 text-center py-3 bg-brand-forest text-white font-bold rounded-lg">查看課程籌備進度</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24" id="home">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        
+        <!-- Left Hero Text -->
+        <div class="lg:col-span-7 space-y-6 text-left">
+          <div class="inline-flex items-center gap-2 text-xs font-mono font-bold tracking-widest text-brand-forest uppercase">
+            <span class="w-2 h-2 rounded-full bg-brand-forest animate-pulse"></span>
+            VIKA'S LIFE EXPERIMENTS
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-brand-forest leading-[1.25] tracking-tight">
+            生活有點卡？<br />
+            一起試試<br />
+            <span class="yellow-highlight">新的可能。</span>
+          </h1>
+
+          <p class="text-base sm:text-lg text-brand-ink/90 leading-relaxed max-w-xl">
+            我是 Vika，不會說日文的日本太太。正在用 AI 學日文、做創作，也練習在媽媽以外，繼續當自己。
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <a href="#experiments" class="px-6 py-3.5 bg-brand-forest text-white rounded-lg font-bold text-sm sm:text-base hover:bg-brand-forestDeep transition shadow-sm flex items-center gap-2">
+              <span>看看我在做什麼</span>
+              <i data-lucide="arrow-right" class="w-4 h-4 text-brand-sand"></i>
+            </a>
+            <a href="#course" class="px-6 py-3.5 border-b border-brand-forest text-brand-forest font-bold text-sm sm:text-base hover:text-black transition">
+              了解 AI 學習方向
+            </a>
+          </div>
+
+          <!-- Social Proof / Vibe Tags -->
+          <div class="flex flex-wrap gap-2 pt-4">
+            <span class="px-3 py-1 bg-brand-tag text-brand-forest text-xs font-medium rounded">視覺設計背景</span>
+            <span class="px-3 py-1 bg-brand-tag text-brand-forest text-xs font-medium rounded">一人創作</span>
+            <span class="px-3 py-1 bg-brand-tag text-brand-forest text-xs font-medium rounded">AI 生活實驗</span>
+            <span class="px-3 py-1 bg-brand-tag text-brand-forest text-xs font-medium rounded">持續摸索中</span>
+          </div>
+        </div>
+
+        <!-- Right Side: Lab Note -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="relative w-full max-w-md bg-brand-forest text-brand-paper p-8 sm:p-10 rounded-xl note-shadow rotate-1 sm:rotate-2 hover:rotate-0 transition-transform duration-300">
+            <div class="flex items-center justify-between text-brand-sand font-mono text-xs tracking-widest mb-6">
+              <span>LAB NOTE / 001</span>
+              <span class="w-2 h-2 rounded-full bg-brand-sand animate-ping"></span>
+            </div>
+
+            <h2 class="text-2xl sm:text-3xl font-medium leading-snug text-white mb-6">
+              今天的問題：<br />
+              AI 能幫我省下時間，<br />
+              去做真正想做的事嗎？
+            </h2>
+
+            <div class="border-t border-brand-forestLight pt-6 mb-8 text-sm sm:text-base leading-relaxed text-slate-200">
+              <p>提出問題 → 試一個方法 → 看看結果。</p>
+              <p class="mt-2 text-brand-sand font-medium">好用就留下。不好用，明天再改。</p>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-slate-300 border-t border-brand-forestLight pt-4">
+              <span>實驗者：Vika + Sola</span>
+              <span class="px-2 py-0.5 rounded bg-brand-forestLight text-brand-sand">持續探索中</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="about" class="border-t border-brand-line py-16 sm:py-24 bg-white/40">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16">
+          
+          <div class="md:col-span-4">
+            <div class="text-xs font-mono font-bold tracking-widest text-slate-500 uppercase mb-2">01 / ABOUT</div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-forest leading-tight">
+              嗨，<br class="hidden sm:inline" />我是 Vika。
+            </h2>
+          </div>
+
+          <div class="md:col-span-8 space-y-6 text-brand-ink text-base sm:text-lg leading-relaxed">
+            <p>
+              我畢業於崑山科技大學視覺傳達設計系，做過平面設計，也接受過動畫燈光培訓與電影合成進修。現在，我想把這些創作經驗和 AI 結合，試著建立自己的一人公司。
+            </p>
+            <p>
+              <strong class="text-brand-forest font-semibold">Vika 實驗室</strong> 記錄的是我實際在做的事：用 AI 學日文、製作內容、整理家庭日常，也看看哪些方法真的能幫上忙。
+            </p>
+            <p class="text-slate-600 bg-brand-paper p-5 rounded-xl border border-brand-line">
+              「這裡會記錄過程，也會記錄失敗。畢竟，生活實驗室如果只有成功報告，那大概是業配部。」
+            </p>
+
+            <div class="pt-2 flex flex-wrap gap-2">
+              <span class="px-3.5 py-1.5 rounded bg-brand-tag text-xs sm:text-sm font-semibold text-brand-forest">視覺設計背景</span>
+              <span class="px-3.5 py-1.5 rounded bg-brand-tag text-xs sm:text-sm font-semibold text-brand-forest">一人創作</span>
+              <span class="px-3.5 py-1.5 rounded bg-brand-tag text-xs sm:text-sm font-semibold text-brand-forest">AI 生活實驗</span>
+              <span class="px-3.5 py-1.5 rounded bg-brand-tag text-xs sm:text-sm font-semibold text-brand-forest">日本家庭日常</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section id="experiments" class="border-t border-brand-line py-16 sm:py-24">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-16 mb-12">
+          <div class="md:col-span-5">
+            <div class="text-xs font-mono font-bold tracking-widest text-slate-500 uppercase mb-2">02 / EXPERIMENTS</div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-forest leading-tight">
+              正在進行的<br />四種實驗。
+            </h2>
+          </div>
+          <div class="md:col-span-7 flex items-end">
+            <p class="text-base sm:text-lg text-slate-700 leading-relaxed">
+              從一句日文到一段影片，從家庭問題到工作流程。每個實驗都從一個真實的「我現在需要什麼」開始。
+            </p>
+          </div>
+        </div>
+
+        <!-- 4 Grid Experiments -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          
+          <!-- Experiment 1 -->
+          <article class="p-8 bg-brand-paper rounded-2xl border border-brand-line hover:border-brand-forest transition group">
+            <div class="text-xs font-mono font-bold text-brand-forest/70 mb-3 tracking-wider">
+              EXPERIMENT 01 / LANGUAGE
+            </div>
+            <h3 class="text-2xl font-bold text-brand-forest mb-3 flex items-center justify-between">
+              <span>AI 幫我學日文</span>
+              <i data-lucide="languages" class="w-6 h-6 text-brand-sand group-hover:scale-110 transition"></i>
+            </h3>
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+              目標是先生不在身邊，也能自己處理日本生活。從購物、交通、學校溝通開始，練習每天敢說一句。
+            </p>
+          </article>
+
+          <!-- Experiment 2 -->
+          <article class="p-8 bg-brand-paper rounded-2xl border border-brand-line hover:border-brand-forest transition group">
+            <div class="text-xs font-mono font-bold text-brand-forest/70 mb-3 tracking-wider">
+              EXPERIMENT 02 / CREATE
+            </div>
+            <h3 class="text-2xl font-bold text-brand-forest mb-3 flex items-center justify-between">
+              <span>建立一人 AI 公司</span>
+              <i data-lucide="briefcase" class="w-6 h-6 text-brand-sand group-hover:scale-110 transition"></i>
+            </h3>
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+              把內容、設計與工作流程拆成小步。從一個人忙不過來，慢慢找到能實際幫上忙的 AI 助手。
+            </p>
+          </article>
+
+          <!-- Experiment 3 -->
+          <article class="p-8 bg-brand-paper rounded-2xl border border-brand-line hover:border-brand-forest transition group">
+            <div class="text-xs font-mono font-bold text-brand-forest/70 mb-3 tracking-wider">
+              EXPERIMENT 03 / FAMILY
+            </div>
+            <h3 class="text-2xl font-bold text-brand-forest mb-3 flex items-center justify-between">
+              <span>AI × 家庭</span>
+              <i data-lucide="heart" class="w-6 h-6 text-brand-sand group-hover:scale-110 transition"></i>
+            </h3>
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+              整理孩子的學習、練習溝通，也重新看見自己的需要。工具幫忙想方法，關係仍要我們親自靠近。
+            </p>
+          </article>
+
+          <!-- Experiment 4 -->
+          <article class="p-8 bg-brand-paper rounded-2xl border border-brand-line hover:border-brand-forest transition group">
+            <div class="text-xs font-mono font-bold text-brand-forest/70 mb-3 tracking-wider">
+              EXPERIMENT 04 / TRY AGAIN
+            </div>
+            <h3 class="text-2xl font-bold text-brand-forest mb-3 flex items-center justify-between">
+              <span>AI 失敗日記</span>
+              <i data-lucide="refresh-cw" class="w-6 h-6 text-brand-sand group-hover:scale-110 transition"></i>
+            </h3>
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+              圖片做歪、指令沒說清楚、方法不適合……把卡關的地方留下來，讓下一次的自己少繞一點路。
+            </p>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+
+    <section id="approach" class="bg-brand-forest text-brand-paper py-16 sm:py-24">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          <div class="lg:col-span-5">
+            <div class="text-xs font-mono font-bold tracking-widest text-brand-sand uppercase mb-2">03 / OUR APPROACH</div>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
+              先有生活，<br />才有工具。
+            </h2>
+            <p class="text-slate-300 text-sm sm:text-base mt-4 leading-relaxed max-w-sm">
+              科技在快速發展，但生活才是主角。我們不追求炫目的演算法，只在乎能否真實改善你今天的感受。
+            </p>
+          </div>
+
+          <div class="lg:col-span-7 divide-y divide-brand-forestLight">
+            
+            <div class="py-6 flex gap-6 items-start">
+              <span class="text-brand-sand font-mono font-bold text-lg sm:text-xl">01</span>
+              <div>
+                <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">從眼前的問題開始</h3>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                  不必一次學會所有工具，先處理你真的想解決的那件事。
+                </p>
+              </div>
+            </div>
+
+            <div class="py-6 flex gap-6 items-start">
+              <span class="text-brand-sand font-mono font-bold text-lg sm:text-xl">02</span>
+              <div>
+                <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">把判斷留給自己</h3>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                  AI 可以提供想法，但我們會多問一句：這真的適合我嗎？
+                </p>
+              </div>
+            </div>
+
+            <div class="py-6 flex gap-6 items-start">
+              <span class="text-brand-sand font-mono font-bold text-lg sm:text-xl">03</span>
+              <div>
+                <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">把過程也分享出來</h3>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                  說清楚怎麼做、哪裡卡住、結果如何。讓你有依據決定要不要試。
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="follow" class="border-t border-brand-line py-16 sm:py-24">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16 items-start">
+          <div class="md:col-span-5">
+            <div class="text-xs font-mono font-bold tracking-widest text-slate-500 uppercase mb-2">04 / FOLLOW ALONG</div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-forest leading-tight mb-4">
+              一起做<br />下一個實驗。
+            </h2>
+            <p class="text-slate-600 text-base">找到你喜歡的閱讀方式，歡迎隨時交換想法。</p>
+          </div>
+
+          <div class="md:col-span-7 divide-y divide-brand-line">
+            
+            <div class="py-5 flex items-center justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                  <i data-lucide="facebook" class="w-5 h-5"></i>
+                </div>
+                <strong class="text-xl sm:text-2xl font-bold text-brand-forest">Facebook</strong>
+              </div>
+              <span class="text-xs sm:text-sm text-slate-500 bg-brand-tag px-3 py-1 rounded">日常故事 · 連結待補</span>
+            </div>
+
+            <div class="py-5 flex items-center justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-pink-50 text-pink-600 flex items-center justify-center font-bold">
+                  <i data-lucide="instagram" class="w-5 h-5"></i>
+                </div>
+                <strong class="text-xl sm:text-2xl font-bold text-brand-forest">Instagram</strong>
+              </div>
+              <span class="text-xs sm:text-sm text-slate-500 bg-brand-tag px-3 py-1 rounded">圖像與片段 · 連結待補</span>
+            </div>
+
+            <div class="py-5 flex items-center justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-slate-100 text-black flex items-center justify-center font-bold">
+                  <i data-lucide="at-sign" class="w-5 h-5"></i>
+                </div>
+                <strong class="text-xl sm:text-2xl font-bold text-brand-forest">Threads</strong>
+              </div>
+              <span class="text-xs sm:text-sm text-slate-500 bg-brand-tag px-3 py-1 rounded">即時想法 · 連結待補</span>
+            </div>
+
+            <div class="py-5 flex items-center justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-red-50 text-red-600 flex items-center justify-center font-bold">
+                  <i data-lucide="youtube" class="w-5 h-5"></i>
+                </div>
+                <strong class="text-xl sm:text-2xl font-bold text-brand-forest">YouTube</strong>
+              </div>
+              <span class="text-xs sm:text-sm text-slate-500 bg-brand-tag px-3 py-1 rounded">影片實驗 · 連結待補</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="course" class="bg-brand-sand py-16 sm:py-24 border-t border-brand-line">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          
+          <div class="lg:col-span-7 space-y-6">
+            <div class="text-xs font-mono font-bold tracking-widest text-brand-forest uppercase">05 / LEARN WITH AI</div>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest leading-tight">
+              從你的第一個<br />AI 生活任務開始。
+            </h2>
+            <p class="text-base sm:text-lg text-brand-forest/90 leading-relaxed">
+              你有沒有一件事，已經想做很久，卻一直卡在「不知道怎麼開始」？
+            </p>
+            <p class="text-base sm:text-lg text-brand-forest/90 leading-relaxed">
+              未來的課程，想陪你帶著真實需求來練習：把問題說清楚、和 AI 合作，再做出可以使用的成果。
+            </p>
+
+            <ul class="space-y-3.5 text-base sm:text-lg text-brand-forest font-medium pt-2">
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-5 h-5 text-brand-forest mt-1 shrink-0"></i>
+                <span>把模糊的想法，整理成可執行的任務</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-5 h-5 text-brand-forest mt-1 shrink-0"></i>
+                <span>練習提問、提供背景與修正結果</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i data-lucide="check" class="w-5 h-5 text-brand-forest mt-1 shrink-0"></i>
+                <span>保留自己的判斷，檢查 AI 的答案</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Course Box -->
+          <div class="lg:col-span-5">
+            <div class="bg-brand-paper p-8 sm:p-10 rounded-2xl border border-[#c7b66e] note-shadow-sm space-y-5">
+              <span class="inline-block px-3 py-1 bg-brand-tag text-brand-forest text-xs font-bold rounded">
+                課程構想 · 籌備中
+              </span>
+
+              <h3 class="text-2xl font-bold text-brand-forest">
+                先看看適不適合你
+              </h3>
+
+              <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
+                適合剛接觸 AI、想用在日常或創作的人。課程日期、內容與費用確認後，會在這裡更新。
+              </p>
+
+              <button id="courseInfo" class="w-full py-3.5 px-6 rounded-lg bg-brand-forest text-white font-bold hover:bg-brand-forestDeep transition shadow-sm flex items-center justify-center gap-2">
+                <i data-lucide="info" class="w-4 h-4 text-brand-sand"></i>
+                <span id="courseBtnText">查看目前課程狀態</span>
+              </button>
+
+              <!-- Dynamic status message box -->
+              <div id="courseMessage" class="hidden p-4 rounded-lg bg-brand-paperDark border border-brand-line text-xs sm:text-sm text-brand-forest leading-relaxed" role="status">
+                課程正在規劃中。正式公告後，這裡會提供課程詳情與報名入口。若有任何生活痛點想先討論，也歡迎隨時透過社群交流！
+              </div>
+
+              <p class="text-xs text-slate-500 pt-1">
+                目前尚未開放報名，也未收集個人資料。
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-brand-line py-10 bg-brand-paper">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-sm text-slate-600">
+      <div class="text-center sm:text-left">
+        <strong class="text-brand-forest font-bold text-base block mb-0.5">Vika 實驗室</strong>
+        <span>和 AI 一起，活成更像自己的樣子。</span>
+      </div>
+      <a href="#home" class="text-brand-forest font-semibold border-b border-brand-forest pb-0.5 hover:text-black transition">
+        回到頁首 ↑
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Mobile Navigation Drawer Toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileNav = document.getElementById('mobile-nav');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    menuBtn.addEventListener('click', () => {
+      mobileNav.classList.toggle('hidden');
+    });
+
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.add('hidden');
+      });
+    });
+
+    // Course Status Toggle
+    const courseInfoBtn = document.getElementById('courseInfo');
+    const courseMessage = document.getElementById('courseMessage');
+    const courseBtnText = document.getElementById('courseBtnText');
+
+    courseInfoBtn.addEventListener('click', function () {
+      const isHidden = courseMessage.classList.contains('hidden');
+      if (isHidden) {
+        courseMessage.classList.remove('hidden');
+        courseBtnText.textContent = '收合課程狀態說明';
+      } else {
+        courseMessage.classList.add('hidden');
+        courseBtnText.textContent = '查看目前課程狀態';
+      }
+    });
+  </script>
+</body>
+</html>
